@@ -74,3 +74,44 @@ calculate 3 result: 5
 calculate 4 result: 5
 ```
 
+## 静态成员函数
+静态成员函数没有 this 指针，不知道指向哪个对象，无法访问对象的成员变量，也就是说静态成员函数不能访问普通成员变量，只能访问静态成员变量。
+类外使用要用访问符
+
+
+## const 成员函数
+
+
+const 对象又可以调用非const 成员函数
+如果 const 对象要删除 ：
+```c++
+void destory() const {
+	delete this;
+}
+```
+
+
+const  ->  小权限 不能调用 非const -> 大权限 的资源
+
+## 智能指针shared_ptr
+```c++
+int main() {  
+    int *t = new int (1);  
+    shared_ptr<int> q(t);  
+    {  
+        shared_ptr<int> p;  
+        p.reset(q.get());  
+        cout << *p<<" "<<p.get()<<" "<<p.use_count()<<endl;  
+        cout << *q<<" "<<q.get()<<" "<<q.use_count()<<endl;  
+    }  
+    cout << *q<<" "<<q.get()<<" "<<q.use_count()<<endl;  
+}
+```
+```out
+1 0x800048440 1
+1 0x800048440 1
+-2144192248 0x800048440 1
+```
+
+指针p reset成指针q所指的对象，虽然指向的对象一致，但是use_count() 都为1，两个指针是完全不一样的对象。
+当作用域结束的时候，指针p析构，则指针 q所指向的内存是未定义的，如果指针q再一次析构，则相应的内存会再次被delete 一次
